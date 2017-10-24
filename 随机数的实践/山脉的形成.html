@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+body{margin: 0;overflow: hidden;}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+/*
+最初两个点，
+以后每次按下空格键， 在每个位置上新增一个newPoint，如此往复
+*/
+let canvas = document.getElementById('canvas');
+let gd     = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let offset = canvas.height / 2;
+let scale = 0.55;
+
+let points = [ {x:0, y:canvas.height / 2}, {x:canvas.width, y:canvas.height/2} ];
+
+draw();
+
+document.onkeydown = function(e){
+	
+	let keyCode = e.keyCode;
+	if( keyCode == 32 ){ // 空格
+		let len = points.length;
+		while(len --){
+			
+			if( len > 0 ){
+				
+				let p0 = points[len];
+				let p1 = points[len - 1];
+				
+				let randOffset = offset * 2 * Math.random() - offset;
+				
+				let newPoint = {
+					x:(p0.x + p1.x)/2,
+					y:(p0.y + p1.y)/2 + randOffset
+				};
+				points.splice(len, 0, newPoint);
+				
+			}
+			
+		} // while len
+		offset *= scale;
+		
+		draw();
+	}
+	
+};
+
+function draw(){
+	
+	gd.clearRect( 0, 0, canvas.width, canvas.height );
+	gd.strokeStyle = 'black';
+	gd.beginPath();
+	
+	gd.moveTo( points[0].x, points[0].y );
+	for( let i = 1; i < points.length; i ++ ){
+		gd.lineTo( points[i].x, points[i].y );
+	}
+	gd.stroke();
+}
+
+</script>
+</body>
+</html>
