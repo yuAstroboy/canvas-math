@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+body{margin: 0;overflow: hidden;}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+
+let canvas = document.getElementById('canvas');
+let gd = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let points = [
+{
+	x : canvas.width * Math.random(),
+	y : 0
+},
+{
+	x : canvas.width * Math.random(),
+	y : canvas.height
+}
+];
+
+let offset = canvas.height / 2;
+let scale = 0.45;
+
+draw();
+
+document.onkeydown = function(e){
+	
+	let keyCode = e.keyCode;
+	
+	if( keyCode == 32 ){ // 空格
+		
+		for( let i = points.length - 1; i > 0; i -- ){
+			let p0 = points[i];
+			let p1 = points[i-1];
+			
+			let randOffset = 2 * offset * Math.random() - offset;
+			
+			let newPoint = {
+				x : (p0.x + p1.x) / 2 + randOffset,
+				y : (p0.y + p1.y) / 2 + randOffset
+			};
+			
+			points.splice(i, 0, newPoint);
+		}
+		
+		offset *= scale;
+		draw();
+	}
+	
+};
+
+function draw(){
+	
+	gd.fillStyle = 'black';
+	gd.fillRect( 0, 0, canvas.width, canvas.height );
+	
+	// 绘制
+	gd.beginPath();
+	gd.moveTo( points[0].x, points[0].y );
+	for( let i = 1; i < points.length; i ++ ){
+		gd.lineTo( points[i].x, points[i].y );
+	}
+	
+	gd.strokeStyle = 'rgb(220, 200, 255)';
+	gd.shadowColor = 'pink';
+	gd.shadowOffsetX = 0;
+	gd.shadowOffsetY = 0;
+	gd.shadowBlur = 20;
+	gd.lineWidth = 4;
+	gd.stroke();
+}
+
+</script>
+</body>
+</html>
